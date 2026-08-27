@@ -104,7 +104,54 @@ class bstree<T> {
     }
 
 
+    // 获取最大值
+    getMax(): T | null {
+        let node = this.root
+        while(node && node.right) {
+            node = node.right
+        }
+        return node?.value ?? null
+    }
 
+    // 获取最小值
+    getMin(): T | null {
+        let node = this.root
+        while(node && node.left) {
+            node = node.left
+        }
+        return node?.value ?? null
+    }
+
+    // 搜索
+    search(value:T):boolean {
+        let node = this.root
+        while(node) {
+            if(node.value === value) return true
+            // if(node.value < value && node.right) {
+            //     node = node.right
+            // } // 报错，因为node一直有值导致循环结束不了
+            // if(node.value > value && node.left) {
+            //     node = node.right
+            // }
+
+            // 报错
+            // if(node.value > value) {
+            //     node = node.right
+            // }
+            // if(node.value < value ) {
+            //     node = node.left
+            // }
+            
+            if(node.value > value) {
+                node = node.left
+            } else {
+                node = node.right
+            }
+          
+            
+        }
+        return false
+    }
 }
 
 const hybt = new bstree()
@@ -118,8 +165,18 @@ hybt.inserted(8)
 hybt.inserted(15)
 
 hybt.print()
+// 遍历 
 // hybt.preOrderTraverse()
 // hybt.inOrderTraverse()
 // hybt.lastOrderTraverse()
 // hybt.levelOrderTraverse()
 
+// 最值
+// console.log(hybt.getMax());
+// console.log(hybt.getMin());
+
+// 搜索
+console.log(hybt.search(10));
+console.log(hybt.search(14));
+console.log(hybt.search(17));
+console.log(hybt.search(6));

@@ -104,7 +104,23 @@ class bstree<T> {
     }
 
 
+    // 获取最大值
+    getMax(): T | null {
+        let node = this.root
+        while(node && node.right) {
+            node = node.right
+        }
+        return node?.value ?? null
+    }
 
+    // 获取最小值
+    getMin(): T | null {
+        let node = this.root
+        while(node && node.left) {
+            node = node.left
+        }
+        return node?.value ?? null
+    }
 }
 
 const hybt = new bstree()
@@ -122,4 +138,5 @@ hybt.print()
 // hybt.inOrderTraverse()
 // hybt.lastOrderTraverse()
 // hybt.levelOrderTraverse()
-
+console.log(hybt.getMax());
+console.log(hybt.getMin());

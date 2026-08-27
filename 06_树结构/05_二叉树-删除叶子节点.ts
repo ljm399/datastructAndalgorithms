@@ -104,7 +104,78 @@ class bstree<T> {
     }
 
 
+    // 获取最大值
+    getMax(): T | null {
+        let node = this.root
+        while(node && node.right) {
+            node = node.right
+        }
+        return node?.value ?? null
+    }
 
+    // 获取最小值
+    getMin(): T | null {
+        let node = this.root
+        while(node && node.left) {
+            node = node.left
+        }
+        return node?.value ?? null
+    }
+
+    // 搜索
+    search(value:T):boolean {
+        let node = this.root
+        while(node) {
+            if(node.value === value) return true
+            if(node.value > value) {
+                node = node.left
+            } else {
+                node = node.right
+            }
+        }
+        return false
+    }
+
+    // 删除叶子节点
+    remove(value:T): boolean {
+        // 1. 先判断该二叉树里面是否有这个值
+        let node = this.root
+        let parent:treeNode<T> | null = null
+        while(node) {
+            if(node.value === value) break
+            if(node.value > value) {
+                parent = node
+                node = node.left
+            } else {
+                parent = node
+                node = node.right
+            }    
+        }
+
+        // 2.通过上面的while循环，说明里面有对应的值
+        // 由于是叶子节点，还要判断当前节点是否有左右子节点
+        if(node?.left ===null && node?.right ===null) {
+            // 3.通过上面的if判断，说明这是叶子节点
+            // 3.1先判断这个是不是root
+            if (node === this.root) {
+                this.root = null
+                return true
+            }
+
+            // 3.2 不是root，则通过其父节点设置为null来删除，但要先判断这个node是左，还是右，然后才能parent.left/right = null来删除
+            // 问题：怎么判断这个node是左还是右呢
+            if(parent?.left === node) {
+                parent.left = null
+                return true
+            }
+
+            if(parent?.right === node) {
+                parent.right = null
+                return true
+            }
+        }
+        return false
+    }
 }
 
 const hybt = new bstree()
@@ -118,8 +189,23 @@ hybt.inserted(8)
 hybt.inserted(15)
 
 hybt.print()
+// 遍历 
 // hybt.preOrderTraverse()
 // hybt.inOrderTraverse()
 // hybt.lastOrderTraverse()
 // hybt.levelOrderTraverse()
 
+// 最值
+// console.log(hybt.getMax());
+// console.log(hybt.getMin());
+
+// 搜索
+// console.log(hybt.search(10));
+// console.log(hybt.search(14));
+// console.log(hybt.search(17));
+// console.log(hybt.search(6));
+
+// 删除
+console.log(hybt.remove(15));
+console.log(hybt.remove(9));
+console.log(hybt.remove(11));

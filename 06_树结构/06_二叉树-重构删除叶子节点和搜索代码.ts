@@ -5,6 +5,16 @@ import { btPrint } from "hy-algokit"
 class treeNode<T> extends Node<T> {
     left: treeNode<T> | null = null
     right: treeNode<T> | null = null
+
+    parent: treeNode<T> | null = null
+    
+    get isLeft ():boolean{
+        return !!(this.parent && this.parent.left === this) 
+    }
+
+    get isRigtht():boolean{
+        return !!(this.parent && this.parent.right === this) 
+    }
 }
 
 class bstree<T> {
@@ -104,7 +114,93 @@ class bstree<T> {
     }
 
 
+    // 获取最大值
+    getMax(): T | null {
+        let node = this.root
+        while(node && node.right) {
+            node = node.right
+        }
+        return node?.value ?? null
+    }
 
+    // 获取最小值
+    getMin(): T | null {
+        let node = this.root
+        while(node && node.left) {
+            node = node.left
+        }
+        return node?.value ?? null
+    }
+
+    // 搜索
+    search(value:T):boolean {
+        const current = this.searchnode(value)
+        return !!current
+    }
+
+    // 删除叶子节点
+    remove(value:T): boolean {
+        // 1. 先判断该二叉树里面是否有这个值
+        let current = this.searchnode(value)
+        if(!current) { return false}
+
+        // 2.通过上面的while循环，说明里面有对应的值
+        // 由于是叶子节点，还要判断当前节点是否有左右子节点
+        if(current?.left ===null && current?.right ===null) {
+            // 3.通过上面的if判断，说明这是叶子节点
+            // 3.1先判断这个是不是root
+            if (current === this.root) {
+                this.root = null
+                return true
+            }
+
+            // 3.2 不是root，则通过其父节点设置为null来删除，但要先判断这个node是左，还是右，然后才能parent.left/right = null来删除
+            // 问题：怎么判断这个node是左还是右呢
+            if(current.isLeft) {
+                current.parent!.left = null
+                return true
+            }
+
+            if(current.isRigtht) {
+                current.parent!.right = null
+                return true
+            }
+        }
+        return false
+    }
+
+    // 重构删除叶子节点代码和搜索代码
+    // private searchnode(value: T):treeNode<T> | null {
+    //     let current = this.root
+    //     while(current) {
+    //         if(current.value === value) return current
+    //         if(current.value > value) {
+    //             current.parent = current
+    //             current = current.left
+    //         } else {
+    //             current.parent = current
+    //             current = current.right
+    //         }
+    //     }
+    //     return null
+    // }
+    // 上面的searchnode有问题
+    private searchnode(value: T): treeNode<T> | null {
+    let current = this.root
+    let parent: treeNode<T> | null = null
+
+    while (current) {
+        if (current.value === value) {
+            current.parent = parent
+            return current
+        }
+
+        parent = current
+        current = current.value > value ? current.left : current.right
+    }
+
+    return null
+}
 }
 
 const hybt = new bstree()
@@ -118,8 +214,23 @@ hybt.inserted(8)
 hybt.inserted(15)
 
 hybt.print()
+// 遍历 
 // hybt.preOrderTraverse()
 // hybt.inOrderTraverse()
 // hybt.lastOrderTraverse()
 // hybt.levelOrderTraverse()
 
+// 最值
+// console.log(hybt.getMax());
+// console.log(hybt.getMin());
+
+// 搜索
+// console.log(hybt.search(10));
+// console.log(hybt.search(14));
+// console.log(hybt.search(17));
+// console.log(hybt.search(6));
+
+// 删除
+console.log(hybt.remove(15));
+console.log(hybt.remove(9));
+console.log(hybt.remove(11));
