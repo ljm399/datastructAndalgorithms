@@ -1,6 +1,6 @@
 import queue from "./队列接口";
 export default class queueArray<T> implements queue<T> {
-    private data:T[] = []
+    protected data:T[] = []
     enqueue(element: T): void {
         this.data.push(element)
     }

@@ -12,4 +12,4 @@ console.log(stack1.isEmtry());
 console.log(stack1.peek());
 stack1.push('cao12')
 
-console.log(stack1.size());
+console.log(stack1.size);

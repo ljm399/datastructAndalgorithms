@@ -15,6 +15,10 @@ class treeNode<T> extends Node<T> {
     get isRigtht():boolean{
         return !!(this.parent && this.parent.right === this) 
     }
+
+    get value() {
+        return ''
+    }
 }
 
 class bstree<T> {
@@ -138,76 +142,84 @@ class bstree<T> {
         return !!current
     }
 
-    // 删除叶子节点
+
     remove(value:T): boolean {
-        // 1. 先判断该二叉树里面是否有这个值
+        // 获取当前的节点
         let current = this.searchnode(value)
         if(!current) { return false}
 
-        // 2.通过上面的while循环，说明里面有对应的值
-        // 由于是叶子节点，还要判断当前节点是否有左右子节点
+        let replaceNode:treeNode<T> | null = null
         if(current?.left ===null && current?.right ===null) {
-            // 3.通过上面的if判断，说明这是叶子节点
-            // 3.1先判断这个是不是root
-            if (current === this.root) {
-                this.root = null
-                return true
-            }
-
-            // 3.2 不是root，则通过其父节点设置为null来删除，但要先判断这个node是左，还是右，然后才能parent.left/right = null来删除
-            // 问题：怎么判断这个node是左还是右呢
-            if(current.isLeft) {
-                current.parent!.left = null
-                return true
-            }
-
-            if(current.isRigtht) {
-                current.parent!.right = null
-                return true
-            }
+            replaceNode = null
         }
-        return false
+        else if(current.right === null) {
+            replaceNode = current.left
+        }
+        else if(current.left === null) {
+            replaceNode = current.right
+        }
+        else {
+            const successor = this.getSuccessor(current)
+            replaceNode = successor
+        }
+
+
+        if(current===this.root) {
+            this.root = replaceNode
+        } 
+        else if(current.isLeft) {
+            current!.parent!.left = replaceNode
+        }
+        else if(current.isRigtht) {
+            current!.parent!.right = replaceNode
+        }
+        return true
     }
 
-    // 重构删除叶子节点代码和搜索代码
-    // 这段代码有逻辑问题，导致remove冲突导致parent不对
-    // private searchnode(value: T):treeNode<T> | null {
-    //     let current = this.root
-    //     while(current) {
-    //         if(current.value === value) return current
-    //         if(current.value > value) {
-                // 问题原因
-                // 就是你这里是A.p=A,这是错的
-                // 应该是B.p = A
-                // 解决办法：
-                //  写下所有逻辑，然后瞪眼出来
-                //  就是那一个变量记录parent
-    //             current.parent = current
-    //             current = current.left
-    //         } else {
-    //             current.parent = current
-    //             current = current.right
-    //         }
-    //     }
-    //     return null
-    // }
-    // 修复和优化代码
+    // 搜索传入值的节点
     private searchnode(value: T): treeNode<T> | null {
-    let current = this.root
-    let parent: treeNode<T> | null = null
+        let current = this.root
+        let parent: treeNode<T> | null = null
 
-    while (current) {
-        if (current.value === value) {
-            current.parent = parent
-            return current
+        while (current) {
+            if (current.data === value) {
+                current.parent = parent
+                return current
+            }
+
+            parent = current
+            current = current.data > value ? current.left : current.right
         }
 
-        parent = current
-        current = current.value > value ? current.left : current.right
+        return null
     }
 
-    return null
-}
+    // 拿到后继节点-作用删除有两个子节点的节点
+    private getSuccessor(delNode:treeNode<T>):treeNode<T> |null{
+        let current = delNode.right
+        let successor : treeNode<T> | null = null
+        while(current) {
+            successor = current
+            current = current.left
+            if(current) {
+                current.parent = successor
+            }
+        }
+
+        // 疑问：做完问ai：后继节点的右子树直接充当后继节点父节点的左子树，不会出现该右子树大于父节点吗
+        // 解答：不会因为后继节点是其父节点的左子树，所以该后继节点整棵树包括右子树都小于其父节点
+
+        // 将删除节点的左边接到后继节点的左边
+        successor!.left = delNode.left
+
+        // 将删除节点的右边接到后继节点的右边
+        if(successor !== delNode.right) {
+            successor!.parent!.left = successor!.right
+            successor!.right = delNode.right
+        }
+
+        return successor
+    }
 }
 
 const hybt = new bstree()
@@ -216,9 +228,12 @@ hybt.inserted(10)
 hybt.inserted(11)
 hybt.inserted(13)
 hybt.inserted(14)
+hybt.inserted(12)
 hybt.inserted(9)
 hybt.inserted(8)
+hybt.inserted(16)
 hybt.inserted(15)
+
 
 hybt.print()
 // 遍历 
@@ -237,8 +252,19 @@ hybt.print()
 // console.log(hybt.search(17));
 // console.log(hybt.search(6));
 
-// 删除
+// 删除叶子节点
 console.log(hybt.remove(15));
 console.log(hybt.remove(9));
 console.log(hybt.remove(11));
+
+// 删除节点-只有一个子节点
+
+hybt.remove(14)
+
+// 删除两个节点的节点
 hybt.print()
+hybt.remove(12)
+// hybt.remove(10)
+// hybt.remove(13)
+hybt.print()
+

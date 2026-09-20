@@ -1,4 +1,4 @@
-import linkedlist from "./16_链表接口"
+import linkedlist from "./链表接口"
 // 封装两个类
 // 第一个类：每个节点的类型
 class node<T> {
@@ -12,15 +12,21 @@ class node<T> {
 }
 
 // 第二个类：创建每个节点连接的类
-class linkList<T> implements linkedlist<T>{
-    head: node<T> | null = null 
-    private length:number = 0 // 添加private，让外面访问不到，内部可以
+export default class linkList<T> implements linkedlist<T>{
+    protected head: node<T> | null = null 
+    protected length:number = 0 // 添加private，让外面访问不到，内部可以
+
+    protected tail: node<T> | null = null 
+
+    protected isTail(node:node<T>):boolean {
+        return this.tail === node
+    }
 
     get size(){
         return this.length
     }
 
-    private getNodePosition(position:number):node<T> | null {
+    protected getNodeByPosition(position:number):node<T> | null {
         let index = 0
         let current = this.head
         while(index++<position && current) { //这个包括index=0吗，还是从index=1开始；从index=0开始
@@ -42,12 +48,16 @@ class linkList<T> implements linkedlist<T>{
         // 追加节点，引入临时变量
         if(!this.head) {
             this.head = newnode
+            this.tail = newnode
         } else {
-            let current =  this.head
-            while(current.Next) {
-                current = current.Next
-            }
-            current.Next = newnode
+            // let current =  this.head
+            // while(current.Next) {
+            //     current = current.Next
+            // }
+            // current.Next = newnode
+            // 因为有tail，就不用current；然后tail记录着尾部节点，而current只能从开头开始，所以代码多，tail代码少
+            this.tail!.Next = newnode
+            this.tail = newnode
         }
 
         this.length++
@@ -58,9 +68,16 @@ class linkList<T> implements linkedlist<T>{
         const arr: T[] = []
         let current = this.head
         while(current) { // 不是current.next而是current，否则就少打印一个元素；因为前者时下一个节点存在，后者是当前元素
-            arr.push(current.value)
-            current = current.Next
+            arr.push(current.value) // 报错原因时下面的current.Next = null 造成的死循环
+            if(this.isTail(current)) {
+                // current.Next = null
+                // 解决
+                break
+            } else {
+                current = current.Next
+            }
         }
+        this.head && arr.push(this.head.value) 
         console.log(arr.join("->")); 
     }
 
@@ -74,22 +91,26 @@ class linkList<T> implements linkedlist<T>{
         if(position === 0) {
             newNode.Next = this.head
             this.head = newNode
-        } else {
-            // 随意位置插入节点
-            // let index = 0
-            // let current = this.head            
-            // let previous : node<T> | null = null // 这里没有复制就使用
-            // let newnode = new node(element)
-            // while(index++ < position && current) {
-            //     previous = current
-            //     current = current.Next
-            // }
-
-            // 重构
-            const previous = this.getNodePosition(position-1)
-
-            // 类型保护：此处 previous 确实存在
-            if (previous === null) return false // 这里不需要，因为previous绝对不可能是null
+            if (!this.length)  {
+                this.tail = newNode 
+            }  
+        } 
+        // 解释this.length-1, 已经有一个则为0，0就是position=0即有一个元素
+        // 这个是插入倒数第二个，而不是倒数第一个
+        // else if(position === this.length-1) {
+        //     this.tail!.Next = newNode
+        //     this.tail = newNode
+        // }
+        // 正确
+        else if(position === this.length) {
+            this.tail!.Next = newNode
+            this.tail = newNode
+            console.log('www');
+            
+        }
+        else {
+            const previous = this.getNodeByPosition(position-1)!
+            // if (previous === null) return false // 这里不需要，因为previous绝对不可能是null
             newNode.Next = previous?.Next ?? null // 这里需要？？null是因为previous要是为null，则previous?.Next为undefined，则会导致报错，所以？？null意思是当previous?.Next为undefined时，则转为null
             previous.Next = newNode
         }
@@ -109,12 +130,14 @@ class linkList<T> implements linkedlist<T>{
         if(position===0) { // 删除头节点
             deleteValue = this.head?.value ?? null
             this.head = this.head?.Next ?? null
-        } else{ // 删除其他位置节点
-            const previous = this.getNodePosition(position-1)
-
-
+        } 
+        else{ // 删除其他位置节点
+            const previous = this.getNodeByPosition(position-1)
+            if(position === this.length -1) {
+                this.tail = previous
+            }
             deleteValue = previous?.Next?.value ?? null
-            previous!.Next = previous?.Next?.Next ?? null // previous不会是null，所以让！强行使得编译通过
+            previous!.Next = previous?.Next?.Next ?? null 
         }
         this.length--
         console.log(this.length,'this.length');
@@ -138,7 +161,7 @@ class linkList<T> implements linkedlist<T>{
 
         let getValue : T | null = null
 
-        getValue = this.getNodePosition(position)?.value ?? null
+        getValue = this.getNodeByPosition(position)?.value ?? null
         return getValue
     }
 
@@ -147,7 +170,7 @@ class linkList<T> implements linkedlist<T>{
         // 边缘判断
         if(position<0 || position>=this.length) return false
 
-        const current = this.getNodePosition(position)
+        const current = this.getNodeByPosition(position)
         current!.value = element
         return true
     }
@@ -161,7 +184,12 @@ class linkList<T> implements linkedlist<T>{
                 return index
             }
             index++
-            current = current.Next
+            if(this.isTail(current)) {
+                // current.Next = null
+                break
+            } else {
+                current = current.Next
+            }
         }
         return -1
     }
@@ -170,3 +198,4 @@ class linkList<T> implements linkedlist<T>{
         return this.length === 0
     }
 }
+

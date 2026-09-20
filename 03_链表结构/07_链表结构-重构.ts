@@ -106,8 +106,6 @@ class linkList<T> {
             this.head = this.head?.Next ?? null
         } else{ // 删除其他位置节点
             const previous = this.getNodePosition(position-1)
-
-
             deleteValue = previous?.Next?.value ?? null
             previous!.Next = previous?.Next?.Next ?? null // previous不会是null，所以让！强行使得编译通过
         }

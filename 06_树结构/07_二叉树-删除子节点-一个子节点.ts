@@ -15,6 +15,11 @@ class treeNode<T> extends Node<T> {
     get isRigtht():boolean{
         return !!(this.parent && this.parent.right === this) 
     }
+
+    // 因为btPrint需要value，但是你这里先用了data保存数据，所以要设置个value混淆过去就行
+    get value() {
+        return this.data
+    }
 }
 
 class bstree<T> {
@@ -138,14 +143,13 @@ class bstree<T> {
         return !!current
     }
 
-    // 删除叶子节点
+
     remove(value:T): boolean {
-        // 1. 先判断该二叉树里面是否有这个值
+        // 获取当前的节点
         let current = this.searchnode(value)
         if(!current) { return false}
 
-        // 2.通过上面的while循环，说明里面有对应的值
-        // 由于是叶子节点，还要判断当前节点是否有左右子节点
+        // 删除叶子节点
         if(current?.left ===null && current?.right ===null) {
             // 3.通过上面的if判断，说明这是叶子节点
             // 3.1先判断这个是不是root
@@ -166,7 +170,33 @@ class bstree<T> {
                 return true
             }
         }
-        return false
+
+        // 删除节点-只有一个子节点
+        // 只有左子节点
+        if(current.right === null) {
+            if(current===this.root) {
+                this.root = current.left
+            } 
+            else if(current.isLeft) {
+                current.parent!.left = current.left
+            }else if(current.isRigtht) {
+                current.parent!.right = current.left               
+            }
+        }
+        // 只有右子节点
+        if(current.left === null) {
+            if(current===this.root) {
+                this.root = current.right
+            } 
+            else if(current.isLeft) {
+                current.parent!.left = current.right
+            }else if(current.isRigtht) {
+                current.parent!.right = current.right               
+            }
+        }
+
+        // 前面每个if判断都要return true或false，太模仿，自己想看成功与否，自己打印结果看看
+        return true
     }
 
     // 重构删除叶子节点代码和搜索代码
@@ -193,21 +223,21 @@ class bstree<T> {
     // }
     // 修复和优化代码
     private searchnode(value: T): treeNode<T> | null {
-    let current = this.root
-    let parent: treeNode<T> | null = null
+        let current = this.root
+        let parent: treeNode<T> | null = null
 
-    while (current) {
-        if (current.value === value) {
-            current.parent = parent
-            return current
+        while (current) {
+            if (current.value === value) {
+                current.parent = parent
+                return current
+            }
+
+            parent = current
+            current = current.value > value ? current.left : current.right
         }
 
-        parent = current
-        current = current.value > value ? current.left : current.right
+        return null
     }
-
-    return null
-}
 }
 
 const hybt = new bstree()
@@ -237,8 +267,15 @@ hybt.print()
 // console.log(hybt.search(17));
 // console.log(hybt.search(6));
 
-// 删除
-console.log(hybt.remove(15));
-console.log(hybt.remove(9));
-console.log(hybt.remove(11));
+// 删除叶子节点
+// console.log(hybt.remove(15));
+// console.log(hybt.remove(9));
+// console.log(hybt.remove(11));
+
+// 删除节点-只有一个子节点
+hybt.remove(9)
+hybt.remove(14)
+
 hybt.print()
+
+

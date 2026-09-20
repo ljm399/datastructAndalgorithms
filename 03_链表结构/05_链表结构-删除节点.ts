@@ -120,9 +120,12 @@ node1.inserted("newinserted2newnew",3)
 node1.inserted("newinserted2newnew22",7)
 
 // console.log(node1.removeat(0));
+node1.traverse()
 
 console.log(node1.removeat(1));
 
+node1.traverse()
+console.log(node1.removeat(3));
 node1.traverse()
 
 

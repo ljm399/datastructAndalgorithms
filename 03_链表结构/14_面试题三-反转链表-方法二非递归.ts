@@ -9,8 +9,11 @@ class ListNode {
 
 function reverseList(head: ListNode | null): ListNode | null {
    let newhead: ListNode | null = null
+
+   // 下面这段代码多次没看懂
+   // 原因就是开始是 null->head->A 而不是直接就是head->A，还有就是3个之间的转换比如null-》head-》b，而不是两个
    while(head) {
-    let current = head.next! // !解决head=current会报错的问题
+    let current = head.next // !解决head=current会报错的问题
     head.next = newhead
     newhead = head
     head = current
