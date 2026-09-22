@@ -118,17 +118,17 @@ export default class AVLTreeNode<T> extends BSTree<T> {
 // btPrint(avltPrt)
 
 // 测试左旋转（right right）
-const avlt = new AVLTreeNode(10)
-avlt.right = new AVLTreeNode(14)
-avlt.right.parent = avlt
-avlt.right.right = new AVLTreeNode(15)
-avlt.right.right.parent = avlt.right
+// const avlt = new AVLTreeNode(10)
+// avlt.right = new AVLTreeNode(14)
+// avlt.right.parent = avlt
+// avlt.right.right = new AVLTreeNode(15)
+// avlt.right.right.parent = avlt.right
 
-const avltPrt = new AVLTreeNode(9)
-avltPrt.right = avlt
-avlt.parent = avltPrt
+// const avltPrt = new AVLTreeNode(9)
+// avltPrt.right = avlt
+// avlt.parent = avltPrt
 
-btPrint(avltPrt)
+// btPrint(avltPrt)
 
-avlt.leftRotation()
-btPrint(avltPrt)
+// avlt.leftRotation()
+// btPrint(avltPrt)

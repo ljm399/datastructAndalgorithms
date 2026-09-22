@@ -114,8 +114,9 @@ class linkList<T> {
         let getValue : T | null = null
         let index = 0
         let current = this.head
-        while(index++<position && current) { //这个包括index=0吗，还是从index=1开始；从index=0开始
-            current = current?.Next
+        while(index++<position && current) { //这个包括index=0吗，还是从index=1开始；从index=0开始; 为什么不是index++<=position因为当index=position-1时，current=current.Next则已经时position的值了
+
+            current = current?.Next 
         }
         getValue = current?.value ?? null
         return getValue
@@ -138,7 +139,7 @@ node1.inserted("newinserted2newnew22",7)
 
 console.log(node1.removeat(1));
 
-console.log(node1.get(3),'node1.get(0)');
+console.log(node1.get(3),'node1.get(3)');
 
 
 node1.traverse()

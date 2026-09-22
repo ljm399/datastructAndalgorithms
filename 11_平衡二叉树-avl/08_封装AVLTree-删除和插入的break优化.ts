@@ -1,15 +1,29 @@
-import { bstree } from "./00_搜索二叉树bstree";
+import treeNode, { bstree } from "./00_搜索二叉树bstree";
 import AVLTreeNode from "./03_封装AVLTreeNode-右旋转操作和左选择操作";
-class AVLTree<T> extends bstree<T> {
 
-    // 然后去找到不平衡的节点？ 先不管
-    
-    // 假设已经找到了，那么我们如何让这个节点变得平衡
+class AVLTree<T> extends bstree<T> {
+    // 删除节点调整信息主要在bstree里面
+
+    protected createNode(value: T): treeNode<T> {
+        return new AVLTreeNode(value)
+    }
+
+
+    protected checkBalance(treeNode: AVLTreeNode<T>,isAdd=true): void {
+        let current = treeNode.parent
+        while(current) {
+            if(!current.isBanlance()) {
+                this.rebalance(current)
+                if(isAdd) break
+            }
+            current = current.parent
+        }
+    }
+
     /**
      * 根据不平衡的节点的情况（LL/RR/LR/RL)让子树平衡
      * @param root 找到的不平衡的节点
      */
-    // ai解释这个root是什么
     rebalance(root:AVLTreeNode<T>){ // 不需要:AVLTreeNode<T> | null
         const pivot = root.heightChild()!
         const current = pivot.heightChild()
@@ -31,16 +45,27 @@ class AVLTree<T> extends bstree<T> {
             }
         }
 
-        // 问题：旋转时要时root不存在怎么办
         if(!resultNode?.parent) {
             this.root = resultNode
         }
     }
 }
 const Avlt = new AVLTree()
-Avlt.inserted(10)
-Avlt.inserted(12)
-Avlt.inserted(14)
-Avlt.inserted(5)
-Avlt.inserted(7)
+console.log('-------------');
+
+const delArr = []
+for(let i=1;i<=20;i++) {
+    let random = Math.floor(Math.random()*200)
+    Avlt.inserted(random)
+    if(random % 2===0 && delArr.length<=8) {
+        delArr.push(random)
+    }
+}
 Avlt.print()
+console.log(delArr);
+
+for(let i of delArr) {
+    Avlt.remove(i)
+}
+Avlt.print()
+

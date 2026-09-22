@@ -233,7 +233,8 @@ class bstree<T> {
         return null
     }
 
-    // 拿到后继节点-作用删除有两个子节点的节点
+    // 拿到后继节点（即拿到右子树中最小的替换删除节点）-作用删除有两个子节点的节点
+    // 还有个通过前驱（即拿到左子树中最大的值替换删除元素的位置）来完成，这里只实现后继
     private getSuccessor(delNode:treeNode<T>):treeNode<T> |null{
         let current = delNode.right
         let successor : treeNode<T> | null = null
@@ -256,6 +257,15 @@ class bstree<T> {
             successor!.parent!.left = successor!.right
             successor!.right = delNode.right
         }
+        /**理解上面的if(successor !== delNode.right)这个看着下面图就懂了，比如删除里面的50
+         *        50
+                /  \
+                30    80
+                    /
+                    60
+                    \
+                    70
+         */
 
         return successor
     }

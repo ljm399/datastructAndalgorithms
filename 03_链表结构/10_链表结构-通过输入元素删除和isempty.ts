@@ -153,9 +153,9 @@ class linkList<T> {
         let index = 0
         while(current) {
             if(current.value === element) {
-                return index
+                return index // 为什么这里是index，而不是先index++再return呢，因为index和current = current.Next一样，上一次循环就是最新的
             }
-            index++
+            index++ 
             current = current.Next
         }
         return -1

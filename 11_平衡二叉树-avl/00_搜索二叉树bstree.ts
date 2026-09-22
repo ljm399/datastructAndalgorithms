@@ -13,7 +13,7 @@ export default class treeNode<T> extends Node<T> {
 
     get isRigtht():boolean{
         return !!(this.parent && this.parent.right === this) 
-    }
+    } 
 }
 
 export class bstree<T> {
@@ -24,27 +24,38 @@ export class bstree<T> {
         btPrint(this.root)
     }
 
+    protected createNode(value:T):treeNode<T> {
+        return new treeNode(value)
+    }
+
+    protected checkBalance(node:treeNode<T>,isAdd=true) {
+    } // 这个就是设计模板，只是为了让父类调用子类方法不报错
+
     // 插入
     inserted(value:T) {
         // const newNode = value 
-        const newNode = new treeNode(value)
+        const newNode = this.createNode(value)
         if(!this.root) {
-            this.root = newNode // 这里报错：不能将类型“T”分配给类型“treeNode<T> | null”。原因是你前面const newNode = value 错了
+            this.root = newNode 
         } else {
             this.insertNode(this.root, newNode)    
         }
+        this.checkBalance(newNode)
     }
-    private insertNode(rNode:treeNode<T>, newNode:treeNode<T>) {
+
+    private insertNode(rNode:treeNode<T>, newNode:treeNode<T>) { //rNode是rootNode的意思
         // 插入左边
         if(newNode.value <= rNode.value) {
-            if (!rNode.left?.value) {
+            if (!rNode.left) {
                 rNode.left = newNode
+                newNode.parent = rNode
             }else {
                 this.insertNode(rNode.left, newNode)
             }
         } else { // 插入右边
-            if (!rNode.right?.value) {
+            if (!rNode.right) {
                 rNode.right = newNode
+                newNode.parent = rNode
             }else {
                 this.insertNode(rNode.right, newNode)
             }
@@ -53,8 +64,6 @@ export class bstree<T> {
 
     // 遍历
     // 先序遍历
-    // 问题：preOrderTraverse这个方法需要个参数来递归，但这个方法是外部调用，然后传入的参数是root，这个root是私有的，外界无法访问
-    // 解决：定义私有函数，然后再这个函数递归就行
     preOrderTraverse() {
         this.preOrderTraverseNode(this.root)
     }
@@ -138,37 +147,59 @@ export class bstree<T> {
     }
 
 
+    // 删除节点的调整
+    // 首先明确remove的目的
+    // 1.删除节点
+    //      明确删除节点parent指向问题
+    //      删除有两个节点的节点要重构：直接删除节点.value = 后继节点.value
+
+    // 2.删除后再平衡
     remove(value:T): boolean {
         // 获取当前的节点
-        let current = this.searchnode(value)
+        let current = this.searchnode(value) 
         if(!current) { return false}
-
         let replaceNode:treeNode<T> | null = null
         if(current?.left ===null && current?.right ===null) {
-            replaceNode = null
+            replaceNode = null // 问题：要是为叶子节点则下面三条条件判断会出现null.parent则报错
+            // 解决：下面三条判断都加了if(replaceNode)  
         }
+
+
         else if(current.right === null) {
             replaceNode = current.left
         }
         else if(current.left === null) {
             replaceNode = current.right
         }
+
+        // 删除有两个子节点
         else {
-            const successor = this.getSuccessor(current)
-            replaceNode = successor
+            const successor = this.getSuccessor(current)!
+            current.value = successor!.value
+            this.checkBalance(successor,false)
+            return true
         }
 
 
         if(current===this.root) {
             this.root = replaceNode
+            if(replaceNode) replaceNode.parent = null//不能是this.root,因为此时 this.root === replaceNode，会导致根节点的 parent 指向自己。根节点的 parent 必须是 null。
         } 
         else if(current.isLeft) {
             current!.parent!.left = replaceNode
+            if(replaceNode)  replaceNode.parent = current.parent
         }
         else if(current.isRigtht) {
             current!.parent!.right = replaceNode
+            if(replaceNode)  replaceNode.parent = current.parent
         }
+
+        // this.checkBalance(replaceNode) // 问题this.checkBalance(replaceNode)的replaceNode可能为null，因为要是current为root
+        // 解决：下面代码
+        this.checkBalance(current,false)// 问题：要是为current则 replaceNode!.parent = current.parent中父节点都没有指向current了
+        // 解决：但是current.parent有值
         return true
+
     }
 
     // 搜索传入值的节点
@@ -201,16 +232,28 @@ export class bstree<T> {
             }
         }
 
-        // 疑问：做完问ai：后继节点的右子树直接充当后继节点父节点的左子树，不会出现该右子树大于父节点吗
-        // 解答：不会因为后继节点是其父节点的左子树，所以该后继节点整棵树包括右子树都小于其父节点
-
-        // 将删除节点的左边接到后继节点的左边
-        successor!.left = delNode.left
+        // 重构改动了什么，你对照之前没改动的代码就知道
+        
+        // successor!.left = delNode.left 
 
         // 将删除节点的右边接到后继节点的右边
         if(successor !== delNode.right) {
             successor!.parent!.left = successor!.right
-            successor!.right = delNode.right
+            if(successor!.right) successor!.right!.parent = successor!.parent
+            // successor!.right = delNode.right 
+        } 
+        else{
+            // if(successor!.right) {
+            //     successor!.parent!.right = successor!.right
+            //     if(successor!.right) successor!.right.parent = successor!.parent
+            // }
+            // successor!.parent!.right = null
+            // 优化
+            delNode.right = successor!.right
+            if(successor!.right) {
+                successor!.right.parent = delNode
+            }
+            
         }
 
         return successor

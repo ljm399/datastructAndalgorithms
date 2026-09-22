@@ -193,20 +193,20 @@ class bstree<T> {
     // }
     // 修复和优化代码
     private searchnode(value: T): treeNode<T> | null {
-    let current = this.root
-    let parent: treeNode<T> | null = null
+        let current = this.root
+        let parent: treeNode<T> | null = null
 
-    while (current) {
-        if (current.value === value) {
-            current.parent = parent
-            return current
+        while (current) {
+            if (current.value === value) {
+                current.parent = parent
+                return current
+            }
+
+            parent = current
+            current = current.value > value ? current.left : current.right
         }
 
-        parent = current
-        current = current.value > value ? current.left : current.right
-    }
-
-    return null
+        return null
 }
 }
 
