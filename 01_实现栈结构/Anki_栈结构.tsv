@@ -1,0 +1,42 @@
+#separator:tab
+#html:true
+#notetype:Basic
+#deck:数据结构与算法::01 栈结构
+#tags column:3
+#columns:Front	Back	Tags
+栈（Stack）最核心的数据访问规则是什么？	后进先出（LIFO，Last In First Out）：最后压入栈的元素最先被移除。	数据结构::栈 基础
+栈顶（top）是什么？	栈中允许直接查看和移除元素的一端；新元素也从这一端加入。	数据结构::栈 基础
+栈的 <code>push(element)</code> 操作做什么？	把一个元素压入栈顶，通常不需要返回值，因此可声明为 <code>push(element: T): void</code>。	数据结构::栈 API TypeScript
+栈的 <code>pop()</code> 操作做什么？	移除并返回栈顶元素；空栈没有元素可返回，因此数组栈中应声明为 <code>pop(): T | undefined</code>。	数据结构::栈 API TypeScript
+栈的 <code>peek()</code> 和 <code>pop()</code> 有什么区别？	<code>peek()</code> 只读取栈顶元素，不改变栈；<code>pop()</code> 会读取并移除栈顶元素。	数据结构::栈 API
+为什么 <code>peek()</code> 的返回类型是 <code>T | undefined</code>？	因为空栈没有栈顶元素。实现 <code>this.data[this.data.length - 1]</code> 在空数组上会得到 <code>undefined</code>。	数据结构::栈 TypeScript 易错点
+如何用数组长度判断栈是否为空？	判断 <code>this.data.length === 0</code>；建议方法统一命名为 <code>isEmpty()</code>。	数据结构::栈 API
+为什么栈的 <code>size</code> 应通过 <code>stack.size</code> 访问，而不是 <code>stack.size()</code>？	源码把它定义成了 getter：<code>get size(): number</code>。getter 按属性访问，不是普通方法。	数据结构::栈 TypeScript 易错点
+<code>ArrayStack&lt;T&gt;</code> 中的泛型 <code>T</code> 有什么作用？	它表示栈内元素的类型，使同一个栈实现可安全复用于不同类型，并限制一次实例中的元素类型保持一致。	数据结构::栈 TypeScript 泛型
+如何分别创建只能存字符串和只能存数字的栈？	<code>const names = new ArrayStack&lt;string&gt;()</code><br><code>const nums = new ArrayStack&lt;number&gt;()</code>	数据结构::栈 TypeScript 泛型
+为什么将数组字段声明为 <code>private data: T[] = []</code>？	隐藏底层存储，防止外部绕过栈 API 任意修改数组，从而保护栈的约束。	数据结构::栈 TypeScript 封装
+使用 JavaScript 数组实现栈时，<code>push</code> 和 <code>pop</code> 的时间复杂度通常是多少？	<code>push</code> 为均摊 O(1)，<code>pop</code> 为 O(1)。二者都在数组末尾操作。	数据结构::栈 复杂度 数组栈
+为什么数组栈应在数组末尾进行压栈和出栈？	数组末尾的 <code>push/pop</code> 通常为 O(1)；若在开头使用 <code>unshift/shift</code>，其他元素需要移动，通常为 O(n)。	数据结构::栈 复杂度 数组栈
+什么时候适合用 TypeScript 接口统一数组栈和链表栈？	当它们对外提供相同操作，但底层存储和实现不同。接口负责约定行为，如 <code>push</code>、<code>pop</code>、<code>peek</code>、<code>isEmpty</code> 和 <code>size</code>。	数据结构::栈 TypeScript 接口
+“接口方法没有函数体，所以 <code>pop</code> 不能写成 <code>T | undefined</code>”对吗？	不对。接口只声明方法签名，返回类型仍应准确描述实现结果：<code>pop(): T | undefined</code>。没有函数体不等于返回 <code>void</code>。	数据结构::栈 TypeScript 接口 易错点
+<code>class ArrayStack&lt;T&gt; implements Stack&lt;T&gt;</code> 中 <code>implements</code> 的作用是什么？	让 TypeScript 检查该类是否满足接口约定；它不会自动提供字段或方法实现。	数据结构::栈 TypeScript 接口
+仅仅“API 相同”时，为什么接口通常比类继承更合适？	API 相同表示行为契约相同，不一定存在可复用的父类实现。接口能统一调用方式，同时保留每种底层实现的独立性。	数据结构::栈 TypeScript 接口
+为什么可用 <code>import type Stack from "./03_栈结构接口.ts"</code> 导入接口？	接口只存在于类型检查阶段，编译后不会成为运行时代码；<code>import type</code> 明确表示这是纯类型导入。	数据结构::栈 TypeScript 模块
+源码中的 <code>stackLink</code> 为什么还不是真正的链表栈？	它的 <code>data</code> 仍是 <code>T[]</code>，并调用数组的 <code>push/pop</code>。真正的链表栈应保存节点，并在链表头部进行插入和删除。	数据结构::栈 链表栈 源码纠错
+用单链表实现栈时，为什么通常把链表头作为栈顶？	在头部插入和删除都只需修改少量指针，时间复杂度为 O(1)；若把尾部作为栈顶，单链表删除尾节点通常需要 O(n) 查找前驱。	数据结构::栈 链表栈 复杂度
+源码接口的 <code>isempty()</code> 与实现类的 <code>isEmpty()</code> 会导致什么问题？	名称大小写不同，被视为两个不同方法。实现类若声明 <code>implements</code>，就必须实现接口中的确切名称；应统一为 <code>isEmpty()</code>。	数据结构::栈 TypeScript 接口 源码纠错
+十进制正整数转二进制时，每轮如何产生下一位？	计算 <code>num % 2</code> 得到当前最低位，再令 <code>num = Math.floor(num / 2)</code> 继续处理更高位。	数据结构::栈 算法::进制转换
+十进制转二进制为什么适合使用栈？	除 2 取余会按“低位到高位”产生数字，而最终字符串需要“高位到低位”。先依次压栈再出栈，恰好将顺序反转。	数据结构::栈 算法::进制转换
+用栈完成十进制转二进制的两个阶段是什么？	第一阶段：不断除 2，将每次余数压栈。<br>第二阶段：不断出栈，把余数依次拼接为二进制字符串。	数据结构::栈 算法::进制转换
+为什么十进制转二进制函数的返回类型适合写成 <code>string</code>？	二进制结果是数字的文本表示，需要按位拼接，并可能包含较长位序列；例如十进制 5 返回 <code>"101"</code>。	数据结构::栈 算法::进制转换 TypeScript
+为什么拼接 <code>stack.pop()</code> 前最好先判断其不为 <code>undefined</code>？	<code>pop()</code> 的静态类型是 <code>T | undefined</code>。判断后 TypeScript 可把它收窄为 <code>T</code>，同时避免把空栈结果拼进字符串。	数据结构::栈 TypeScript 类型收窄
+<code>result =+ value</code> 与 <code>result += value</code> 有什么区别？	<code>=+</code> 是赋值加一元正号，会尝试把值转成数字并覆盖原值；<code>+=</code> 才是在原结果后累加或拼接。	数据结构::栈 JavaScript 易错点
+源码中的十进制转二进制函数为什么没有正确返回计算结果？	它打印了 <code>result</code>，最后却执行 <code>return ""</code>。应改为 <code>return result</code>。	数据结构::栈 算法::进制转换 源码纠错
+普通“不断除 2”实现需要怎样处理输入 <code>0</code>？	应单独返回 <code>"0"</code>；否则 <code>while (num &gt; 0)</code> 一次也不执行，会得到空字符串。	数据结构::栈 算法::进制转换 边界条件
+用栈验证括号有效性时，遇到左括号应做什么？	把它对应的右括号压栈：遇到 <code>(</code> 压入 <code>)</code>，遇到 <code>[</code> 压入 <code>]</code>，遇到 <code>{</code> 压入 <code>}</code>。	数据结构::栈 算法::有效括号
+用栈验证括号有效性时，遇到右括号应做什么？	弹出栈顶“期望的右括号”并与当前字符比较；若不同（包括空栈弹出 <code>undefined</code>），立即返回 <code>false</code>。	数据结构::栈 算法::有效括号
+扫描完整个括号字符串后，为什么还要检查栈是否为空？	栈非空表示仍有左括号没有匹配。例如 <code>"([]){"</code> 扫描结束后仍期待 <code>}</code>，因此无效。	数据结构::栈 算法::有效括号 边界条件
+有效括号算法为什么能检查正确的嵌套顺序？	最近出现但尚未匹配的左括号必须最先闭合，这正是后进先出的规则。	数据结构::栈 算法::有效括号
+使用栈验证长度为 n 的括号字符串，时间和空间复杂度分别是多少？	时间复杂度 O(n)，每个字符只处理一次；最坏空间复杂度 O(n)，例如字符串全部由左括号组成。	数据结构::栈 算法::有效括号 复杂度
+源码中的有效括号函数对输入字符有什么隐含前提？	它假设字符串只包含六种括号字符。其他字符也会进入 <code>default</code> 分支并尝试出栈；若需支持普通文本，应明确跳过或拒绝非括号字符。	数据结构::栈 算法::有效括号 源码分析
+<code>isvalid("([])")</code> 和 <code>isvalid("([]){")</code> 应分别返回什么？	前者返回 <code>true</code>；后者返回 <code>false</code>，因为最后的左花括号没有闭合。	数据结构::栈 算法::有效括号
