@@ -71,6 +71,11 @@ class Heap<T>{
          *  导致不能let leftIndex = 2*index + 1和index是随时变化的（条件)
          *   解决：2*index + 1<this.length
          *  */        
+
+        // 下面函数作用简单来说就是：
+        // 下滤：先找出当前节点的左右子节点中值较大的一个。
+        // 如果当前节点小于这个较大的子节点，就交换并继续向下检查；
+        // 否则说明当前子树已经满足最大堆规则，结束下滤。
         while(2*index+1<this.length){
              leftIndex = 2*index + 1
              rightIndex = leftIndex + 1
@@ -109,13 +114,11 @@ class Heap<T>{
          * 
          */
 
-        let start = Math.floor((this.length)/2-1)
+        let start = Math.floor((this.length)/2)-1
 
-        // 
         for(let i=start; i>=0;i--) {
             this.heapify_down(i)
             console.log(i);
-            
         }
 
     }
