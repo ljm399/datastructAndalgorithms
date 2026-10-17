@@ -8,7 +8,7 @@ class hashTable<T=any> {
         let hashcode = 0
         const length = val.length // 这里之前提取为常量，则下面的for循环就不会重复使用
         for(let i=0;i<length;i++) {
-            hashcode = hashcode*i + val.charCodeAt(i)
+            hashcode = hashcode*31 + val.charCodeAt(i)
         }
         // % hashcode的范围锁定在数组的长度即max之内
         const index = hashcode % max
@@ -70,6 +70,7 @@ class hashTable<T=any> {
                 bucket.splice(i,1)
                 this.count--
 
+                // 缩容
                 if(this.count/this.length<0.25 && this.length > 7) {
                     this.resize(Math.floor(this.length/2))
                 }

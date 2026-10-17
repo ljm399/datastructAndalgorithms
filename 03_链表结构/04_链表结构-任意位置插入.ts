@@ -71,8 +71,8 @@ class linkList<T> {
                 current = current.Next
             }
             // 类型保护：此处 previous 确实存在
-            if (previous === null) return false
-            previous.Next = newnode
+            // if (previous === null) return false
+            previous!.Next = newnode
             newnode.Next = current
         }
         this.size++

@@ -199,28 +199,6 @@ class bstree<T> {
         return true
     }
 
-    // 重构删除叶子节点代码和搜索代码
-    // 这段代码有逻辑问题，导致remove冲突导致parent不对
-    // private searchnode(value: T):treeNode<T> | null {
-    //     let current = this.root
-    //     while(current) {
-    //         if(current.value === value) return current
-    //         if(current.value > value) {
-                // 问题原因
-                // 就是你这里是A.p=A,这是错的
-                // 应该是B.p = A
-                // 解决办法：
-                //  写下所有逻辑，然后瞪眼出来
-                //  就是那一个变量记录parent
-    //             current.parent = current
-    //             current = current.left
-    //         } else {
-    //             current.parent = current
-    //             current = current.right
-    //         }
-    //     }
-    //     return null
-    // }
     // 修复和优化代码
     private searchnode(value: T): treeNode<T> | null {
         let current = this.root

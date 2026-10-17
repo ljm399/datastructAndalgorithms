@@ -1,4 +1,4 @@
-import queueArray from "./01_实现队列结构-数组"
+import queueArray from "./01_实现队列结构-数组.ts"
 // 在数组中，不断删除数组中count的元素
 function hotPotato(arr:string[], count:number):number {
     const queue = new queueArray<string>()

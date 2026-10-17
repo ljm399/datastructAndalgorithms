@@ -1,4 +1,4 @@
-import {Node} from "../types/树接口";
+import {Node} from "../types/平衡二叉树接口-和树接口区分";
 
 import { btPrint } from "hy-algokit"
 

@@ -1,4 +1,4 @@
-import {Node} from "../types/树接口";
+import {Node} from "../types/平衡二叉树接口-和树接口区分.ts";
 
 import { btPrint } from "hy-algokit"
 
@@ -27,14 +27,14 @@ class bstree<T> {
 
     private insertNode(rNode:treeNode<T>, newNode:treeNode<T>) {
         // 插入左边
-        if(newNode.value <= rNode.value) {
-            if (!rNode.left?.value) {
+        if(newNode.value! <= rNode.value!) {
+            if (!rNode.left) {
                 rNode.left = newNode
             }else {
                 this.insertNode(rNode.left, newNode)
             }
         } else { // 插入右边
-            if (!rNode.right?.value) {
+            if (!rNode.right) {
                 rNode.right = newNode
             }else {
                 this.insertNode(rNode.right, newNode)

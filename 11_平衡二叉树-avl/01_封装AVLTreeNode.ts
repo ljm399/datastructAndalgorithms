@@ -9,7 +9,7 @@ class AVLTreeNode<T> extends BSTree<T> {
     getHeight():number {
         const leftHeight = this.left ? this.left.getHeight() : 0
         const rightHeight = this.right ? this.right.getHeight() : 0 
-        return Math.max(leftHeight,rightHeight) + 1
+        return Math.max(leftHeight,rightHeight) + 1 //加1是因为this本身就有一层高度，下面的getBalanceFactor不会受影响，因为是相对的
     }
 
     private getBalanceFactor():number {

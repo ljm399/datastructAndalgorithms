@@ -12,7 +12,7 @@ class hashTable<T=any> {
         for(let i=0;i<length;i++) {
             hashcode = hashcode*i + val.charCodeAt(i)
         }
-        // % hashcode的范围锁定在数组的长度即max之内
+        // 将hashcode的范围锁定在数组的长度即max之内
         const index = hashcode % max
         return index
     }

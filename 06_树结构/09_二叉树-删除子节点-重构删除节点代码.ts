@@ -16,8 +16,8 @@ class treeNode<T> extends Node<T> {
         return !!(this.parent && this.parent.right === this) 
     }
 
-    get value() {
-        return ''
+    get value():T | null {
+        return this.data
     }
 }
 
@@ -41,7 +41,7 @@ class bstree<T> {
     }
     private insertNode(rNode:treeNode<T>, newNode:treeNode<T>) {
         // 插入左边
-        if(newNode.value <= rNode.value) {
+        if(newNode.value! <= rNode.value!) {
             if (!rNode.left?.value) {
                 rNode.left = newNode
             }else {

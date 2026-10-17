@@ -1,5 +1,5 @@
 class Graph<T> {
-    vertices:T[] = []
+    vertices:T[] = [] // 顶点
 
     // edgess:<T,T[]> = new Map()
     // 上面报错
@@ -15,7 +15,7 @@ class Graph<T> {
     addEdge(Vertex:T,sonVertex:T) {
         this.edges.get(Vertex)?.push(sonVertex)
 
-        // 要是是无向量的图则删去下面的代码
+        // 要是是有向量的图则删去下面的代码
         this.edges.get(sonVertex)?.push(Vertex)
 
     }

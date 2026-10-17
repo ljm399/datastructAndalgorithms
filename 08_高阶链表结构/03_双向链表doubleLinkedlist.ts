@@ -3,6 +3,8 @@ import { doubleNode } from "./双向链表节点类型";
 class doubleLinkedList<T> extends linkList<T>{
     protected head: doubleNode<T>|null = null
     protected tail:doubleNode<T>|null = null
+
+    // append是追加到最后的位置
     append(value: T): void {
         const newNode = new doubleNode(value)
         if(!this.head) {

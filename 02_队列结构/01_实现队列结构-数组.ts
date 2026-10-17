@@ -1,4 +1,4 @@
-import queue from "./队列接口";
+import type queue from "./队列接口.ts";
 export default class queueArray<T> implements queue<T> {
     protected data:T[] = []
     enqueue(element: T): void {

@@ -47,8 +47,6 @@ class linkList<T> {
             current = current.Next
         }
         console.log(arr.join("->"));
-        
-        
     }
 }
 

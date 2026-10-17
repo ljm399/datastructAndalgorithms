@@ -111,11 +111,9 @@ class Heap<T>{
 
         let start = Math.floor((this.length)/2-1)
 
-        // 
         for(let i=start; i>=0;i--) {
             this.heapify_down(i)
             // console.log(i);
-            
         }
 
     }

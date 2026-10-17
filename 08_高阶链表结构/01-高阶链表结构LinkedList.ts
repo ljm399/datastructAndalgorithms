@@ -104,9 +104,7 @@ export default class linkList<T> implements linkedlist<T>{
         // 正确
         else if(position === this.length) {
             this.tail!.Next = newNode
-            this.tail = newNode
-            console.log('www');
-            
+            this.tail = newNode            
         }
         else {
             const previous = this.getNodeByPosition(position-1)!

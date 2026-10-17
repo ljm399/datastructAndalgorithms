@@ -9,7 +9,10 @@ class AVLTreeNode<T> extends BSTree<T> {
     getHeight():number {
         const leftHeight = this.left ? this.left.getHeight() : 0
         const rightHeight = this.right ? this.right.getHeight() : 0 
-        return Math.max(leftHeight,rightHeight) + 1
+        return Math.max(leftHeight,rightHeight) + 1//递归是去询问左右子树各自有多高；拿到左右子树高度后，**当前节点不管有没有子节点，都要给自己这一层 + 1**。
+        // 没有子节点的时候，左右高度都是 0，+1 就是自己这一层；有子节点，拿到子树的高度，再加当前自己这一层
+        // 所以只要执行了this.getHeigth就会+1，不就达到了计算高度的目的
+        // 你的目的就是获取高度吗
     }
 
     private getBalanceFactor():number {

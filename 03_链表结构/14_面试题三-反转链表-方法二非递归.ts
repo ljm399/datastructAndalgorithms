@@ -18,6 +18,7 @@ function reverseList(head: ListNode | null): ListNode | null {
     newhead = head
     head = current
    }
+   // 上面便捷记法，知道有两head，newhead指向前一个，旧head指向向下一个
    return newhead
 };
 

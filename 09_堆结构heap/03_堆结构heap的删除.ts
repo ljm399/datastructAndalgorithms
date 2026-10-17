@@ -65,7 +65,10 @@ class Heap<T>{
          *  约束是这个值<this.length(约束)
          *  导致不能let leftIndex = 2*index + 1和index是随时变化的（条件)
          *   解决：2*index + 1<this.length
+         * 
+         * 为什么是2*index+1<this.length，如果 `2*index+1 < length`：**左孩子存在**。只要左孩子存在，当前节点就**不是叶子节点**，需要继续下滤。
          *  */        
+
         while(2*index+1<this.length){
              leftIndex = 2*index + 1
              rightIndex = leftIndex + 1

@@ -50,16 +50,24 @@ class Graph<T> {
     }
 
     // 深度优先（deep-first search）
+    /* 
+             A
+            / \
+            B   C
+            / \
+            D   E 答案是ABDEC
+
+    */
     dfs() {
-        const queueArr:T[] = []
-        queueArr.push(this.vertices[0])
+        const stackArr:T[] = []
+        stackArr.push(this.vertices[0])
 
         // 存放已经遍历过的节点
         const visited = new Set<T>()
         visited.add(this.vertices[0])
 
-        while(queueArr.length) {
-            const vertex = queueArr.pop()!
+        while(stackArr.length) {
+            const vertex = stackArr.pop()!
             console.log(vertex);
             
             //Adjacency List Grap指的是“邻接表图”
@@ -68,10 +76,16 @@ class Graph<T> {
             // for(const vertex of adjlist) {
             //     const item = 
             // } 因为要从元素某位选起，所以用普通的for
+
+            // 为什么这里又是最后一个开始遍历，然后又是push添加的最后一个位置
+            // 为了符合stack的属性，否则你可以从0开始遍历然后第一个unshift添加
+            // 为什么数组尽量不要使用unshift而是使用push
+            // 因为- `push`：只在数组末尾追加，O (1) 很快
+            //  - `unshift`：在数组最前面插入，**整个数组所有元素都要往后挪一位，O (n)**顶点一多，性能明显变差。
             for(let i = adjlist.length -1;i>=0;i--) {
                 const item = adjlist[i]
                 if(!visited.has(item)) {
-                    queueArr.push(item)
+                    stackArr.push(item)
                     visited.add(item)
                 }
             }

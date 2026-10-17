@@ -110,7 +110,7 @@ class Heap<T>{
          * 设第一个非叶子节点是i，则其左子节点的下标是2i+1
          * 然后左子节点最大要<=this.length-1
          * 即2i+1 <= this.length-1
-         * i<=（this.length)/2-1
+         * i<= (this.length-2)/2
          * 
          */
 

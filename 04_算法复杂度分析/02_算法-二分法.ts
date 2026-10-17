@@ -4,7 +4,7 @@
  * @param count 要查找的值
  * @returns 要查找的值在数组里面的索引位置
  */
-export default function binarySearch(arr:number[],count:number):number {
+export default function binarySearch(arr:number[],count:number):number {//arr注意要先排好序
     let left = 0
     let right = arr.length -1 
     let mid = Math.floor((arr.length -1 )/ 2)
@@ -20,3 +20,4 @@ export default function binarySearch(arr:number[],count:number):number {
     }
     return -1
 }
+console.log(binarySearch([2, 3, 44, 46, 224, 343, 345, 453], 44)); // 2

@@ -2,7 +2,6 @@ import { ArrayStack } from "./01_实现栈结构_数组.ts"
 // 十进制转二进制
 function dimicalToBinary(num:number):string { //为什么会是string呢
     const stack1 = new ArrayStack<number>()
-    let binaryNum = 0
     let result = ''
     // 计算
     while (num > 0) { 

@@ -30,6 +30,7 @@ class Graph<T> {
     bfs() {
         const queueArr:T[] = []
         queueArr.push(this.vertices[0])
+        let ptr = 0 // 队首指针，由于shift()十分耗掉性能
 
         // 存放已经遍历过的节点
         const visited = new Set()
@@ -45,7 +46,8 @@ class Graph<T> {
         // 防止在反上面错误，下次提醒自己是用for还是while呢，上面明显不知道要执行多少次，所以肯定用while
         // 正确写法
         while(queueArr.length) {
-            const vertex = queueArr.shift()!//非空断言，不加！则下面的this.edges.get(vertex)报错，可以用方式一的&&，英文这里确认不会是空，所以用!
+            // const vertex = queueArr.shift()!//非空断言，不加！则下面的this.edges.get(vertex)报错，可以用方式一的&&，英文这里确认不会是空，所以用!
+            const vertex = queueArr[ptr++] // 不shift，只移动指针
             console.log(vertex);
 
             // 方式一
